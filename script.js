@@ -38,6 +38,13 @@ function normalize(text) {
   return text.trim().toLowerCase().replace(/ё/g, "е");
 }
 
+// Kuvab tulemuse daisyUI "alert" komponendina; tüüp määrab värvi (success / error / warning)
+function showResult(el, type, message) {
+  el.className = "alert alert-soft alert-" + type + " mt-4";
+  el.textContent = message;
+  el.hidden = false;
+}
+
 // Seob ühe tabeli veeru loogika: "from" on kuvatava sõna keel, "to" on keel, milles vastust kontrollitakse.
 // Sama funktsioon teenindab mõlemat suunda, seega pole vaja koodi dubleerida
 function setupQuiz(from, to) {
@@ -54,14 +61,15 @@ function setupQuiz(from, to) {
 
     // Tühja vastuse korral ei loeta seda veaks, vaid palutakse midagi sisestada
     if (userAnswer === "") {
-      resultEl.textContent = "Palun sisesta vastus.";
+      showResult(resultEl, "warning", "Palun sisesta vastus.");
+      answerEl.focus();
       return;
     }
 
     if (userAnswer === normalize(currentWord[to])) {
-      resultEl.textContent = "Õige! 🎉";
+      showResult(resultEl, "success", "✅ Õige! 🎉");
     } else {
-      resultEl.textContent = "Vale. Õige vastus on: " + currentWord[to];
+      showResult(resultEl, "error", "❌ Vale. Õige vastus on: " + currentWord[to]);
     }
   }
 

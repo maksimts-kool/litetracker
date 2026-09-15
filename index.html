@@ -1,45 +1,95 @@
 <!DOCTYPE html>
-<html lang="et">
+<html lang="et" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hajusrakenduste sõnavara kontroll</title>
+
+  <!-- Kujundus: daisyUI (tasuta komponenditeek) + Tailwind CSS laetakse CDN-ist, build-samm pole vajalik -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-  <h1>Hajusrakenduste sõnavara kontroll</h1>
+<body class="min-h-screen bg-base-200 text-base-content">
 
-  <table border="1">
-    <thead>
-      <tr>
-        <th>Eesti → Vene</th>
-        <th>Vene → Eesti</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <!-- 1. veerg: kuvatakse eestikeelne sõna, kontrollitakse venekeelset vastet -->
-        <td>
-          <p>Tõlgi sõna vene keelde:</p>
-          <p id="word-et"></p>
-          <input type="text" id="answer-et" placeholder="Sisesta venekeelne vaste">
-          <button id="check-et">Kontrolli</button>
-          <p id="result-et"></p>
-        </td>
+  <!-- Päis: pealkiri ja heleda/tumeda teema lüliti (daisyUI theme-controller) -->
+  <header class="navbar bg-base-100 shadow-sm px-4 sm:px-8">
+    <div class="flex-1 flex items-center gap-3">
+      <span class="text-2xl" aria-hidden="true">🌐</span>
+      <div>
+        <p class="font-bold leading-tight">Sõnavara kontroll</p>
+        <p class="text-xs opacity-60">Hajusrakendused · ET ⇄ RU</p>
+      </div>
+    </div>
+    <label class="flex items-center gap-2 cursor-pointer text-sm">
+      <span aria-hidden="true">☀️</span>
+      <input type="checkbox" value="dark" class="toggle toggle-sm theme-controller" aria-label="Tume teema">
+      <span aria-hidden="true">🌙</span>
+    </label>
+  </header>
 
-        <!-- 2. veerg: vastupidine variant – venekeelne sõna, kontrollitakse eestikeelset vastet -->
-        <td>
-          <p>Переведи слово на эстонский:</p>
-          <p id="word-ru"></p>
-          <input type="text" id="answer-ru" placeholder="Sisesta eestikeelne vaste">
-          <button id="check-ru">Kontrolli</button>
-          <p id="result-ru"></p>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <main class="max-w-5xl mx-auto px-4 py-8 sm:py-12">
+    <section class="text-center mb-8">
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Hajusrakenduste sõnavara kontroll</h1>
+      <p class="mt-3 opacity-70 max-w-2xl mx-auto">
+        Harjuta hajusrakenduste termineid mõlemas suunas: tõlgi eestikeelne termin vene keelde
+        ja venekeelne termin eesti keelde. Vastuse kontrollimiseks vajuta <kbd class="kbd kbd-sm">Enter</kbd>.
+      </p>
+    </section>
 
-  <!-- Värskendamise nupp laeb lehe uuesti ja genereerib mõlemasse veergu uue random sõna -->
-  <button id="refreshBtn">Värskenda</button>
+    <div class="card bg-base-100 shadow-xl overflow-hidden">
+      <table class="table w-full">
+        <!-- Tabeli päis kuvatakse ainult laiemal ekraanil; mobiilis on veeru nimi kaardi sees -->
+        <thead class="hidden md:table-header-group bg-base-300/50">
+          <tr>
+            <th class="w-1/2 text-base">🇪🇪 Eesti → 🇷🇺 Vene</th>
+            <th class="w-1/2 text-base">🇷🇺 Vene → 🇪🇪 Eesti</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Mobiilis veerud paigutuvad üksteise alla (flex-col), laiemal ekraanil kõrvuti tabeli veergudena -->
+          <tr class="flex flex-col md:table-row">
+            <!-- 1. veerg: kuvatakse eestikeelne sõna, kontrollitakse venekeelset vastet -->
+            <td class="block md:table-cell align-top p-6 md:border-r border-base-300">
+              <span class="badge badge-primary badge-soft md:hidden mb-3">🇪🇪 Eesti → 🇷🇺 Vene</span>
+              <p class="text-sm opacity-60">Tõlgi sõna vene keelde</p>
+              <p id="word-et" class="text-3xl font-bold text-primary my-4 break-words min-h-10"></p>
+
+              <div class="join w-full">
+                <input type="text" id="answer-et" lang="ru" autocomplete="off"
+                       class="input join-item w-full" placeholder="Sisesta venekeelne vaste">
+                <button id="check-et" class="btn btn-primary join-item">Kontrolli</button>
+              </div>
+              <div id="result-et" role="status" class="mt-4" hidden></div>
+            </td>
+
+            <!-- 2. veerg: vastupidine variant – venekeelne sõna, kontrollitakse eestikeelset vastet -->
+            <td class="block md:table-cell align-top p-6 border-t md:border-t-0 border-base-300">
+              <span class="badge badge-secondary badge-soft md:hidden mb-3">🇷🇺 Vene → 🇪🇪 Eesti</span>
+              <p class="text-sm opacity-60">Переведи слово на эстонский</p>
+              <p id="word-ru" class="text-3xl font-bold text-secondary my-4 break-words min-h-10"></p>
+
+              <div class="join w-full">
+                <input type="text" id="answer-ru" lang="et" autocomplete="off"
+                       class="input join-item w-full" placeholder="Sisesta eestikeelne vaste">
+                <button id="check-ru" class="btn btn-secondary join-item">Kontrolli</button>
+              </div>
+              <div id="result-ru" role="status" class="mt-4" hidden></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Värskendamise nupp laeb lehe uuesti ja genereerib mõlemasse veergu uue random sõna -->
+    <div class="text-center mt-8">
+      <button id="refreshBtn" class="btn btn-outline btn-wide">🔄 Värskenda</button>
+    </div>
+  </main>
+
+  <footer class="footer footer-center p-6 text-sm opacity-60">
+    <p>Hajusrakenduste sõnavara kontroll · HTML, JavaScript, Tailwind CSS, daisyUI</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
