@@ -41,6 +41,7 @@ ja ava <http://localhost:5173>.
 - „Uus sõna“ nupp kummaski veerus ja „Värskenda“ nupp kogu lehe jaoks
 - õigete/valede vastuste statistika
 - hele ja tume teema, mobiilivaade
+- animatsioonid (lehe laadimine, uus sõna, õige/vale vastus, statistika), mis lülituvad välja `prefers-reduced-motion` seadega
 
 ## Git
 

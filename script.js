@@ -91,6 +91,14 @@ function variants(value) {
   return value.split("/").map(function (v) { return v.trim(); });
 }
 
+// Käivitab CSS animatsiooni uuesti: eemaldab eelmise animatsiooniklassi, sunnib brauseri reflow'd
+// (offsetWidth lugemine) ja lisab klassi tagasi – muidu sama klassi korduv lisamine animatsiooni ei käivitaks
+function animate(el, className) {
+  el.classList.remove("anim-word", "anim-pop", "anim-shake", "anim-bump", "anim-celebrate", "anim-spin");
+  void el.offsetWidth;
+  el.classList.add(className);
+}
+
 // Tulemuse tüübile vastav Lucide ikoon (avatud lähtekoodiga ikoonikomplekt)
 const resultIcons = { success: "circle-check", error: "circle-x", warning: "triangle-alert" };
 
@@ -104,15 +112,19 @@ function showResult(el, type, message) {
   el.appendChild(text);
   lucide.createIcons();
   el.hidden = false;
+  animate(el, "anim-pop");
 }
 
-// Uuendab statistika plokki; täpsus arvutatakse protsentides ja ümardatakse täisarvuks
-function renderStats() {
+// Uuendab statistika plokki; täpsus arvutatakse protsentides ja ümardatakse täisarvuks.
+// Muutunud loendur ja täpsus "hüppavad" korraks suuremaks, et muutus oleks märgatav
+function renderStats(changedId) {
   const total = stats.correct + stats.wrong;
   document.getElementById("stat-correct").textContent = stats.correct;
   document.getElementById("stat-wrong").textContent = stats.wrong;
   document.getElementById("stat-accuracy").textContent =
     total === 0 ? "–" : Math.round((stats.correct / total) * 100) + "%";
+  animate(document.getElementById(changedId), "anim-bump");
+  animate(document.getElementById("stat-accuracy"), "anim-bump");
 }
 
 // Seob ühe tabeli veeru loogika: "from" on kuvatava sõna keel, "to" on keel, milles vastust kontrollitakse.
@@ -131,6 +143,7 @@ function setupQuiz(from, to) {
     wordEl.textContent = variants(currentWord[from])[0];
     answerEl.value = "";
     resultEl.hidden = true;
+    animate(wordEl, "anim-word");
   }
 
   // Kontrollkood: võrdleb kasutaja vastust massiivis oleva õige tõlkega sihtkeeles
@@ -140,6 +153,7 @@ function setupQuiz(from, to) {
     // Tühja vastuse korral ei loeta seda veaks, vaid palutakse midagi sisestada
     if (userAnswer === "") {
       showResult(resultEl, "warning", "Palun sisesta vastus.");
+      animate(answerEl.parentElement, "anim-shake");
       answerEl.focus();
       return;
     }
@@ -152,18 +166,22 @@ function setupQuiz(from, to) {
     if (!answered) {
       isCorrect ? stats.correct++ : stats.wrong++;
       answered = true;
-      renderStats();
+      renderStats(isCorrect ? "stat-correct" : "stat-wrong");
     }
 
     if (isCorrect) {
       showResult(resultEl, "success", "Õige!");
+      animate(wordEl, "anim-celebrate");
     } else {
       showResult(resultEl, "error", "Vale. Õige vastus on: " + accepted.join(" / "));
+      animate(answerEl.parentElement, "anim-shake"); // vale vastuse korral sisestusväli "raputab"
     }
   }
 
   document.getElementById("check-" + from).addEventListener("click", checkAnswer);
   document.getElementById("next-" + from).addEventListener("click", function () {
+    const icon = this.querySelector("svg");
+    if (icon) animate(icon, "anim-spin");
     nextWord();
     answerEl.focus();
   });
@@ -182,6 +200,10 @@ setupQuiz("ru", "et");
 lucide.createIcons();
 
 // Värskendamise nupp laeb lehe uuesti, mis genereerib mõlemasse veergu uue random sõna
+// Enne uuesti laadimist teeb ikoon ühe pöörde; kui animatsioonid on välja lülitatud, laaditakse kohe
 document.getElementById("refreshBtn").addEventListener("click", function () {
-  location.reload();
+  const icon = this.querySelector("svg");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (icon) animate(icon, "anim-spin");
+  setTimeout(function () { location.reload(); }, reduceMotion ? 0 : 450);
 });
