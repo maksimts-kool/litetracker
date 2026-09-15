@@ -13,6 +13,16 @@ Veebileht hajusrakenduste terminite harjutamiseks kahes suunas:
 - [daisyUI](https://daisyui.com/): tasuta komponenditeek (card, table, alert, join, toggle, stat)
 - [Lucide](https://lucide.dev/): avatud lähtekoodiga ikoonid (ISC litsents)
 
+## Sõnavara
+
+Terminid on võetud blogi kategooria [Hajusrakendused](https://maksimtsikvasvili24.thkit.ee/wp/category/hajusrakendused/) postitustest:
+
+- [Hajusrakenduste Alused](https://maksimtsikvasvili24.thkit.ee/wp/hajusrakendused/2356/): hajussüsteem, tööjaotus, ressursside jagamine
+- [Veebiteenused](https://maksimtsikvasvili24.thkit.ee/wp/hajusrakendused/2359/): SOAP, REST, päring, vastus, olekuta
+- [Harjutused](https://maksimtsikvasvili24.thkit.ee/wp/hajusrakendused/2367/): REST API, sessionStorage/localStorage, küpsised, AJAX, GitHub API ja Actions, WebSocket, bcrypt
+
+Kui terminil on mitu õiget vastet, eraldatakse need massiivis kaldkriipsuga (nt `хеш/хэш`); kuvatakse esimene variant.
+
 ## Käivitamine
 
 Ava `index.html` brauseris või käivita kohalik server:

@@ -1,29 +1,70 @@
-// Sõnavara massiiv: iga objekt sisaldab hajusrakenduste termini eesti keeles (et) ja vene keeles (ru)
+// Sõnavara massiiv: iga objekt sisaldab hajusrakenduste termini eesti keeles (et) ja vene keeles (ru).
+// Terminid on võetud blogi kategooria "Hajusrakendused" postitustest:
+// https://maksimtsikvasvili24.thkit.ee/wp/category/hajusrakendused/
+// Kui terminil on mitu õiget vastet, eraldatakse need kaldkriipsuga (nt "хеш/хэш")
 const words = [
-  { et: "hajusrakendus", ru: "распределённое приложение" },
-  { et: "server", ru: "сервер" },
-  { et: "klient", ru: "клиент" },
-  { et: "võrk", ru: "сеть" },
-  { et: "andmebaas", ru: "база данных" },
-  { et: "sõlm", ru: "узел" },
+  // Postitus "Hajusrakenduste Alused"
+  { et: "hajussüsteem", ru: "распределённая система" },
+  { et: "tööjaotus", ru: "разделение труда" },
+  { et: "ressursside jagamine", ru: "совместное использование ресурсов" },
+  { et: "korduvkasutamine", ru: "повторное использование" },
+
+  // Postitus "Veebiteenused" (SOAP, REST, HTTP)
+  { et: "veebiteenus", ru: "веб-сервис/веб-служба" },
   { et: "päring", ru: "запрос" },
   { et: "vastus", ru: "ответ" },
-  { et: "protokoll", ru: "протокол" },
-  { et: "koormusjaotur", ru: "балансировщик нагрузки" },
-  { et: "replikatsioon", ru: "репликация" },
-  { et: "tõrketaluvus", ru: "отказоустойчивость" },
-  { et: "skaleeritavus", ru: "масштабируемость" },
-  { et: "vahemälu", ru: "кэш" },
+  { et: "ressurss", ru: "ресурс" },
+  { et: "olekuta", ru: "без сохранения состояния" },
   { et: "sõnum", ru: "сообщение" },
-  { et: "järjekord", ru: "очередь" },
-  { et: "mikroteenus", ru: "микросервис" },
-  { et: "pilv", ru: "облако" },
-  { et: "ühendus", ru: "соединение" },
-  { et: "viivitus", ru: "задержка" },
-  { et: "sünkroniseerimine", ru: "синхронизация" },
-  { et: "tehing", ru: "транзакция" },
+  { et: "päis", ru: "заголовок" },
+  { et: "veahaldus", ru: "обработка ошибок" },
+  { et: "jõudlus", ru: "производительность" },
+  { et: "privaatvõrk", ru: "частная сеть" },
+  { et: "standard", ru: "стандарт" },
+
+  // Postitus "Harjutused": REST API, andmete kuvamine ja veebisalvestus
+  { et: "andmebaas", ru: "база данных" },
+  { et: "filtreerimine", ru: "фильтрация" },
+  { et: "sorteerimine", ru: "сортировка" },
+  { et: "massiiv", ru: "массив" },
+  { et: "andmevorming", ru: "формат данных" },
+  { et: "sessioon", ru: "сессия/сеанс" },
+  { et: "vahekaart", ru: "вкладка" },
+  { et: "võti", ru: "ключ" },
+  { et: "väärtus", ru: "значение" },
+  { et: "küpsis", ru: "куки/cookie" },
+  { et: "kasutaja tuvastamine", ru: "идентификация пользователя" },
+
+  // Postitus "Harjutused": AJAX, GitHub API ja GitHub Actions
+  { et: "asünkroonne", ru: "асинхронный" },
+  { et: "sünkroonne", ru: "синхронный" },
+  { et: "andmevahetus", ru: "обмен данными" },
   { et: "liides", ru: "интерфейс" },
-  { et: "turvalisus", ru: "безопасность" }
+  { et: "kasutajanimi", ru: "имя пользователя" },
+  { et: "hoidla/repositoorium", ru: "репозиторий" },
+  { et: "töövoog", ru: "рабочий процесс" },
+  { et: "haru", ru: "ветка" },
+
+  // Postitus "Harjutused": vestlusruum (WebSocket, WebHook)
+  { et: "server", ru: "сервер" },
+  { et: "klientrakendus", ru: "клиентское приложение" },
+  { et: "sündmus", ru: "событие" },
+  { et: "sündmuspõhine", ru: "событийно-ориентированный" },
+  { et: "ühendus", ru: "соединение" },
+  { et: "vestlusruum", ru: "чат" },
+  { et: "reaalajaline", ru: "в реальном времени" },
+  { et: "kahesuunaline", ru: "двусторонний" },
+  { et: "kohtvõrk", ru: "локальная сеть" },
+  { et: "teek", ru: "библиотека" },
+  { et: "pakett", ru: "пакет" },
+
+  // Postitus "Harjutused": turvaline räsi (bcrypt)
+  { et: "parool", ru: "пароль" },
+  { et: "räsi", ru: "хеш/хэш" },
+  { et: "räsimine", ru: "хеширование/хэширование" },
+  { et: "sool", ru: "соль" },
+  { et: "rünnak", ru: "атака" },
+  { et: "lihttekst", ru: "открытый текст" }
 ];
 
 // Ühine statistika mõlema veeru jaoks – loendurid on väljaspool setupQuiz funktsiooni, et neid jagada
@@ -43,6 +84,11 @@ function getRandomWord(exclude) {
 // et kasutaja ei saaks vale vastust ainult suurtähe või ё/е erinevuse pärast
 function normalize(text) {
   return text.trim().toLowerCase().replace(/ё/g, "е");
+}
+
+// Tükeldab massiivi välja aktsepteeritud vasteteks; esimest varianti kuvatakse küsitava sõnana
+function variants(value) {
+  return value.split("/").map(function (v) { return v.trim(); });
 }
 
 // Tulemuse tüübile vastav Lucide ikoon (avatud lähtekoodiga ikoonikomplekt)
@@ -82,7 +128,7 @@ function setupQuiz(from, to) {
   function nextWord() {
     currentWord = getRandomWord(currentWord);
     answered = false;
-    wordEl.textContent = currentWord[from];
+    wordEl.textContent = variants(currentWord[from])[0];
     answerEl.value = "";
     resultEl.hidden = true;
   }
@@ -98,7 +144,9 @@ function setupQuiz(from, to) {
       return;
     }
 
-    const isCorrect = userAnswer === normalize(currentWord[to]);
+    // Vastus on õige, kui see ühtib ükskõik millise aktsepteeritud variandiga
+    const accepted = variants(currentWord[to]);
+    const isCorrect = accepted.some(function (v) { return normalize(v) === userAnswer; });
 
     // Loendurit suurendatakse ainult esimesel katsel, et sama sõna korduv kontroll ei moonutaks statistikat
     if (!answered) {
@@ -110,7 +158,7 @@ function setupQuiz(from, to) {
     if (isCorrect) {
       showResult(resultEl, "success", "Õige!");
     } else {
-      showResult(resultEl, "error", "Vale. Õige vastus on: " + currentWord[to]);
+      showResult(resultEl, "error", "Vale. Õige vastus on: " + accepted.join(" / "));
     }
   }
 
