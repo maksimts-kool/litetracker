@@ -45,10 +45,18 @@ function normalize(text) {
   return text.trim().toLowerCase().replace(/ё/g, "е");
 }
 
-// Kuvab tulemuse daisyUI "alert" komponendina; tüüp määrab värvi (success / error / warning)
+// Tulemuse tüübile vastav Lucide ikoon (avatud lähtekoodiga ikoonikomplekt)
+const resultIcons = { success: "circle-check", error: "circle-x", warning: "triangle-alert" };
+
+// Kuvab tulemuse daisyUI "alert" komponendina; tüüp määrab värvi ja ikooni (success / error / warning).
+// Tekst lisatakse textContent kaudu, et sisestatud väärtus ei saaks HTML-ina käivituda
 function showResult(el, type, message) {
   el.className = "alert alert-soft alert-" + type + " mt-4";
-  el.textContent = message;
+  el.innerHTML = '<i data-lucide="' + resultIcons[type] + '" class="size-5 shrink-0"></i>';
+  const text = document.createElement("span");
+  text.textContent = message;
+  el.appendChild(text);
+  lucide.createIcons();
   el.hidden = false;
 }
 
@@ -100,9 +108,9 @@ function setupQuiz(from, to) {
     }
 
     if (isCorrect) {
-      showResult(resultEl, "success", "✅ Õige! 🎉");
+      showResult(resultEl, "success", "Õige!");
     } else {
-      showResult(resultEl, "error", "❌ Vale. Õige vastus on: " + currentWord[to]);
+      showResult(resultEl, "error", "Vale. Õige vastus on: " + currentWord[to]);
     }
   }
 
@@ -121,6 +129,9 @@ function setupQuiz(from, to) {
 // 1. veerg: eesti sõna → venekeelne vaste; 2. veerg: vene sõna → eestikeelne vaste
 setupQuiz("et", "ru");
 setupQuiz("ru", "et");
+
+// Asendab kõik lehel olevad <i data-lucide="..."> elemendid SVG ikoonidega
+lucide.createIcons();
 
 // Värskendamise nupp laeb lehe uuesti, mis genereerib mõlemasse veergu uue random sõna
 document.getElementById("refreshBtn").addEventListener("click", function () {

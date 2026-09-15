@@ -11,6 +11,7 @@ Veebileht hajusrakenduste terminite harjutamiseks kahes suunas:
 - HTML + puhas JavaScript (ilma raamistikuta)
 - [Tailwind CSS](https://tailwindcss.com/) (browser CDN)
 - [daisyUI](https://daisyui.com/): tasuta komponenditeek (card, table, alert, join, toggle, stat)
+- [Lucide](https://lucide.dev/): avatud lähtekoodiga ikoonid (ISC litsents)
 
 ## Käivitamine
 
