@@ -43,7 +43,14 @@ ja ava <http://localhost:5173>.
 - hele ja tume teema, mobiilivaade
 - animatsioonid (lehe laadimine, uus sõna, õige/vale vastus, statistika), mis lülituvad välja `prefers-reduced-motion` seadega
 
-## Git
+## Git ja LiteTracker
 
 - `main`: algne versioon (eesti → vene)
-- `feature/kahesuunaline-sonavara-tabel`: edasiarendus (kahe veeruga tabel, kujundus, kommentaarid)
+- `88594-kahesuunaline-sonavara-tabel`: edasiarendus (kahe veeruga tabel, kujundus, kommentaarid, animatsioonid)
+
+Haru nimi algab LiteTrackeri story ID-ga (`88594`), seega seob GitHubi veebikonks (webhook)
+harude ja commit'ide muudatused automaatselt vastava story'ga. Commit'i sõnumis viidatakse
+story'le kujul `[#88594]`.
+
+- GitHubi hoidla: <https://github.com/maksimts-kool/litetracker>
+- Haru: <https://github.com/maksimts-kool/litetracker/tree/88594-kahesuunaline-sonavara-tabel>
